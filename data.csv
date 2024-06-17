@@ -1,0 +1,41 @@
+roomID,Name,Contact,roomType,price,daysofStay
+101,wahyu,896821,VVIP,50 $,2
+102,None,None,VVIP,50 $,None
+103,None,None,VVIP,50 $,None
+104,None,None,VVIP,50 $,None
+105,None,None,VVIP,50 $,None
+106,None,None,VVIP,50 $,None
+107,Nugraha,589045,VVIP,50 $,3
+108,Aji,889988,VVIP,50 $,2
+109,Pangestu,867957,VVIP,50 $,1
+110,None,None,VVIP,50 $,None
+201,None,None,VIP,35$,None
+202,None,None,VIP,35$,None
+203,None,None,VIP,35$,None
+204,Udin,None,VIP,35$,3
+205,None,None,VIP,35$,2
+206,Budi,None,VIP,35$,2
+207,Alexander,None,VIP,35$,1
+208,None,None,VIP,35$,None
+209,Julian,None,VIP,35$,1
+210,None,None,VIP,35$,None
+301,Om Anton,None,Deluxe,25$,7
+302,Alif,None,Deluxe,25$,2
+303,None,None,Deluxe,25$,None
+304,None,None,Deluxe,25$,None
+305,Hendra,None,Deluxe,25$,3
+306,None,None,Deluxe,25$,None
+307,None,None,Deluxe,25$,None
+308,Akmal,None,Deluxe,25$,1
+309,None,None,Deluxe,25$,None
+310,Fitria,None,Deluxe,25$,1
+401,None,None,Single,15$,None
+402,None,None,Single,15$,None
+403,Nuraini,None,Single,15$,1
+404,Aksel,None,Single,15$,2
+405,None,None,Single,15$,None
+406,None,None,Single,15$,None
+407,Rose,None,Single,15$,4
+408,None,None,Single,15$,None
+409,None,None,Single,15$,None
+410,Graham,None,Single,15$,2
