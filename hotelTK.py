@@ -70,6 +70,34 @@ def MainWindow():
     ButtonFrame = ttk.Frame(root)
     ButtonFrame.pack(side=tk.RIGHT, padx=(0, 20), pady=20, fill='both')
 
+    RoomLabel = ttk.Label(ButtonFrame, text='Show Rooms')
+    RoomLabel.pack(padx=5, pady=5)
+    showAllButton = ttk.Button(ButtonFrame, text="All Rooms")
+    showAllButton.pack(padx=5, pady=5)
+
+    showReservedButton = ttk.Button(ButtonFrame, text="Reserved")
+    showReservedButton.pack(padx=5, pady=5)
+
+    showunReservedButton = ttk.Button(ButtonFrame, text="Unreserved")
+    showunReservedButton.pack(padx=5, pady=5)
+
+    UpdateLabel = ttk.Label(ButtonFrame, text='Room Update')
+    UpdateLabel.pack(padx=5, pady=(30, 0))
+    reserveButton = ttk.Button(ButtonFrame, text="Reserve")
+    reserveButton.pack(padx=5, pady=5)
+
+    removeButton = ttk.Button(ButtonFrame, text="Remove")
+    removeButton.pack(padx=5, pady=5)
+
+    sortRoomIDButton = ttk.Button(ButtonFrame, text="Sort by ID")
+    sortRoomIDButton.pack(side=tk.BOTTOM, padx=5, pady=(5, 5))
+
+    sortedDateButton = ttk.Button(ButtonFrame, text="Sort by Price")
+    sortedDateButton.pack(side=tk.BOTTOM, padx=5, pady=(5, 5))
+
+    searchButton = ttk.Button(ButtonFrame, text="Search")
+    searchButton.pack(side=tk.BOTTOM, padx=5, pady=(5, 5))
+
     column = ['Room ID', 'Guest Name', 'Guest Contact', 'Room Type', 'Price', 'Days of Stay', 'Date of Entry']
     columnWidth = [70, 180, 150, 80, 60, 80, 80]
 
