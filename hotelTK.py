@@ -20,6 +20,23 @@ def csvReader():
             rooms.append(line)
     return rooms
 
+def binarySearch(arr, target_name):
+    left, right = 0, len(arr) - 1
+    target_name = target_name.lower()
+
+    while left <= right:
+        mid = (left + right) // 2
+        current_name = arr[mid].guestName.lower()
+
+        if current_name == target_name:
+            return mid
+        elif current_name < target_name:
+            left = mid + 1
+        else:
+            right = mid - 1
+
+    return False
+
 class List:
     def __init__(self, roomID, guestName, guestContact, roomType, Price, daysofStay, Date):
         self.roomID = roomID
@@ -99,6 +116,14 @@ class RoomManager:
     def getunReservedRoomID(self):
         unReservedRoomID = [room.roomID for room in self.roomList if room.guestName == '-']
         return unReservedRoomID
+    
+    def searchGuestName(self, keyword):
+        keyword = keyword.lower()
+        keywordRoomID = binarySearch(self.roomList, keyword)
+        if keywordRoomID != False:
+            return self.roomList[keywordRoomID]
+        else:
+            return None
 
 def MainWindow():
     global tree
@@ -155,7 +180,7 @@ def MainWindow():
     sortedDateButton = ttk.Button(ButtonFrame, text = "Sort by Price")
     sortedDateButton.pack(side=tk.BOTTOM, padx=5, pady=(5,5))
 
-    searchButton = ttk.Button(ButtonFrame, text = "Search")
+    searchButton = ttk.Button(ButtonFrame, text = "Search", command=lambda: SearchWindow())
     searchButton.pack(side=tk.BOTTOM, padx=5, pady=(5,5))
 
     column = ['Room ID', 'Guest Name', 'Guest Contact', 'Room Type', 'Price', 'Days of Stay', 'Date of Entry']
@@ -288,6 +313,47 @@ def showContent(Room):
             room.daysofStay,
             room.Date
         ))
+
+def SearchWindow():
+    window = tk.Toplevel()
+    window.title("Reservasi Kamar")
+    global newX, newY
+    window.geometry(f"220x100+{newX-245}+{newY}")
+
+    searchMain = RoomManager()
+
+    inputFrame = ttk.Frame(window)
+    inputFrame.pack(padx=(5, 5), pady=(10,5), expand=False, fill='both')
+
+    tk.Label(inputFrame, text="Guest Name").grid(row=0, column=0)
+    guestName = tk.Entry(inputFrame)
+    guestName.grid(row=0, column=1)
+
+    def search():
+        keyword = guestName.get()
+        result = searchMain.searchGuestName(keyword)
+
+        if result is not None:
+            MainWindow()
+            global tree
+            tree.delete(*tree.get_children())
+
+            tree.insert('', tk.END, values=(
+                result.roomID,
+                result.guestName,
+                result.guestContact,
+                result.roomType,
+                result.Price,
+                result.daysofStay,
+                result.Date
+            ))
+        else:
+            messagebox.showinfo("Search Result", "Guest name not found.")
+
+    searchButton = tk.Button(inputFrame, text="Search", command=search)
+    searchButton.grid( column=0, columnspan=2, pady=20)
+
+    window.mainloop()
 
 def main():
     root.title("Hotel Management")
