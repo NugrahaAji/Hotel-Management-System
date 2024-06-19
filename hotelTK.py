@@ -37,6 +37,16 @@ def binarySearch(arr, target_name):
 
     return False
 
+def quickSort(arr, key=lambda x: x):
+    if len(arr) <= 1:
+        return arr
+    else:
+        pivot = arr[len(arr) // 2]
+        less = [x for x in arr if key(x) < key(pivot)]
+        equal = [x for x in arr if key(x) == key(pivot)]
+        greater = [x for x in arr if key(x) > key(pivot)]
+        return quickSort(less, key) + equal + quickSort(greater, key)
+
 class List:
     def __init__(self, roomID, guestName, guestContact, roomType, Price, daysofStay, Date):
         self.roomID = roomID
@@ -97,7 +107,6 @@ class RoomManager:
             writer = csv.DictWriter(file, fieldnames=fieldnames)
             writer.writeheader()
             writer.writerows(Update)
-
     def calculateBill(self, roomID):
         for room in self.rooms:
             if roomID == room['roomID']:
@@ -107,8 +116,9 @@ class RoomManager:
                     return price * days
                 except ValueError:
                     return None
+
         return False
-    
+
     def getReservedRoomID(self):
         reservedRoomID = [room.roomID for room in self.roomList if room.guestName != '-']
         return reservedRoomID
@@ -116,7 +126,7 @@ class RoomManager:
     def getunReservedRoomID(self):
         unReservedRoomID = [room.roomID for room in self.roomList if room.guestName == '-']
         return unReservedRoomID
-    
+
     def searchGuestName(self, keyword):
         keyword = keyword.lower()
         keywordRoomID = binarySearch(self.roomList, keyword)
@@ -124,6 +134,14 @@ class RoomManager:
             return self.roomList[keywordRoomID]
         else:
             return None
+
+    def sortRoomID(self):
+        sortedRoomID = quickSort(self.roomList, key=lambda room: room.roomID)
+        return sortedRoomID
+
+    def sortPrice(self):
+        sortedPrice = quickSort(self.roomList, key=lambda room: room.Price)
+        return sortedPrice
 
 def MainWindow():
     global tree
@@ -142,12 +160,16 @@ def MainWindow():
     ) for room in rooms]
 
     main = RoomManager()
-    
+
     reservedRoomID = main.getReservedRoomID()
     reservedRooms = [room for room in roomList if room.roomID in reservedRoomID]
-    
+
     unReservedRoomID = main.getunReservedRoomID()
     unReservedRooms = [room for room in roomList if room.roomID in unReservedRoomID]
+
+    sortRoomID = main.sortRoomID()
+
+    sortPrice = main.sortPrice()
 
     TableFrame = ttk.Frame(root)
     TableFrame.pack(side=tk.LEFT, padx=(20, 0), pady=20, expand=False, fill='both')
@@ -157,13 +179,13 @@ def MainWindow():
 
     RoomLabel = ttk.Label(ButtonFrame, text = 'Show Rooms')
     RoomLabel.pack(padx=5, pady=5)
-    showAllButton = ttk.Button(ButtonFrame, text="All Rooms", command=MainWindow)
+    showAllButton = ttk.Button(ButtonFrame, text="All Rooms", command=lambda: MainWindow())
     showAllButton.pack(padx=5, pady=5)
 
     showReservedButton = ttk.Button(ButtonFrame, text="Reserved", command=lambda: showContent(reservedRooms))
     showReservedButton.pack(padx=5, pady=5)
 
-    showunReservedButton = ttk.Button(ButtonFrame, text="Unreserved",command=lambda: showContent(unReservedRooms))
+    showunReservedButton = ttk.Button(ButtonFrame, text="Unreserved", command=lambda: showContent(unReservedRooms))
     showunReservedButton.pack(padx=5, pady=5)
 
     UpdateLabel = ttk.Label(ButtonFrame, text = 'Room Update')
@@ -209,7 +231,6 @@ def MainWindow():
     scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
 def ReserveWindow():
-
     window = tk.Toplevel()
     window.title("Reservasi Kamar")
     global newX, newY
@@ -300,7 +321,7 @@ def RemoveWindow():
     confirmButton.grid( column=0, columnspan=2, pady=20, padx=(20,0))
 
     window.mainloop()
-    
+
 def showContent(Room):
     tree.delete(*tree.get_children())
     for room in Room:
