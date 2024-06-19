@@ -90,7 +90,6 @@ class RoomManager:
                     return price * days
                 except ValueError:
                     return None
-
         return False
 
 def MainWindow():
@@ -170,6 +169,98 @@ def MainWindow():
     tree.configure(yscroll=scrollbar.set)
     scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
+def ReserveWindow():
+
+    window = tk.Toplevel()
+    window.title("Reservasi Kamar")
+    global newX, newY
+    window.geometry(f"220x250+{newX-245}+{newY}")
+
+    reserveMain = RoomManager()
+
+    inputFrame = ttk.Frame(window)
+    inputFrame.pack(padx=(5, 5), pady=(10,5), expand=False, fill='both')
+
+    tk.Label(inputFrame, text="Room ID").grid(row=0, column=0)
+    roomID = tk.Entry(inputFrame)
+    roomID.grid(row=0, column=1, pady=3)
+
+    tk.Label(inputFrame, text="First Name").grid(row=1, column=0)
+    firstName = tk.Entry(inputFrame)
+    firstName.grid(row=1, column=1, pady=3)
+
+    tk.Label(inputFrame, text="Last Name").grid(row=2, column=0)
+    lastName = tk.Entry(inputFrame)
+    lastName.grid(row=2, column=1, pady=3)
+
+    tk.Label(inputFrame, text="Contact").grid(row=3, column=0)
+    Contact = tk.Entry(inputFrame)
+    Contact.grid(row=3, column=1, pady=3)
+
+    tk.Label(inputFrame, text="Days of Stay").grid(row=4, column=0)
+    daysofStay = tk.Entry(inputFrame)
+    daysofStay.grid(row=4, column=1, pady=3)
+
+    tk.Label(inputFrame, text="Date of Entry").grid(row=5, column=0)
+    Date = tk.Entry(inputFrame)
+    Date.grid(row=5, column=1, pady=3)
+    tk.Label(inputFrame, text="*dd/mm/yy").grid(row=6, column=1, padx=(0,60))
+
+    def confirm():
+        reserveMain.roomReserve(
+            roomID.get(),
+            firstName.get(),
+            lastName.get(),
+            Contact.get(),
+            int(daysofStay.get()),
+            Date.get()
+        )
+        window.destroy()
+        MainWindow()
+
+    confirmButton = tk.Button(inputFrame, text="Confirm", command=confirm)
+    confirmButton.grid( column=0, columnspan=2, pady=10, padx=(20,0))
+
+    window.mainloop()
+
+
+
+def RemoveWindow():
+    window = tk.Toplevel()
+    window.title("Reservasi Kamar")
+    global newX, newY
+    window.geometry(f"220x100+{newX-245}+{newY}")
+
+    removeMain = RoomManager()
+
+    inputFrame = ttk.Frame(window)
+    inputFrame.pack(padx=(5, 5), pady=(10,5), expand=False, fill='both')
+
+    tk.Label(inputFrame, text="Room ID").grid(row=0, column=0)
+    roomID = tk.Entry(inputFrame)
+    roomID.grid(row=0, column=1)
+
+    def confirm():
+        bill = removeMain.calculateBill(roomID.get())
+        if bill is False:
+            billNotification = "Room ID doesn't exist"
+            tk.messagebox.showinfo("Bill", billNotification)
+        elif bill is not None :
+            billNotification = f"Total Bill: {bill}"
+            tk.messagebox.showinfo("Bill", billNotification)
+        elif bill is None:
+            billNotification = "That Room ID isn't reserved"
+            tk.messagebox.showinfo("Bill", billNotification)
+
+        removeMain.roomRemove(roomID.get())
+
+        window.destroy()
+        MainWindow()
+
+    confirmButton = tk.Button(inputFrame, text="Confirm", command=confirm)
+    confirmButton.grid( column=0, columnspan=2, pady=20, padx=(20,0))
+
+    window.mainloop()
 
 def main():
     root.title("Hotel Management")
