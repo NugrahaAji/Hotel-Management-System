@@ -91,6 +91,14 @@ class RoomManager:
                 except ValueError:
                     return None
         return False
+    
+    def getReservedRoomID(self):
+        reservedRoomID = [room.roomID for room in self.roomList if room.guestName != '-']
+        return reservedRoomID
+
+    def getunReservedRoomID(self):
+        unReservedRoomID = [room.roomID for room in self.roomList if room.guestName == '-']
+        return unReservedRoomID
 
 def MainWindow():
     global tree
@@ -109,6 +117,12 @@ def MainWindow():
     ) for room in rooms]
 
     main = RoomManager()
+    
+    reservedRoomID = main.getReservedRoomID()
+    reservedRooms = [room for room in roomList if room.roomID in reservedRoomID]
+    
+    unReservedRoomID = main.getunReservedRoomID()
+    unReservedRooms = [room for room in roomList if room.roomID in unReservedRoomID]
 
     TableFrame = ttk.Frame(root)
     TableFrame.pack(side=tk.LEFT, padx=(20, 0), pady=20, expand=False, fill='both')
@@ -118,21 +132,21 @@ def MainWindow():
 
     RoomLabel = ttk.Label(ButtonFrame, text = 'Show Rooms')
     RoomLabel.pack(padx=5, pady=5)
-    showAllButton = ttk.Button(ButtonFrame, text="All Rooms")
+    showAllButton = ttk.Button(ButtonFrame, text="All Rooms", command=MainWindow)
     showAllButton.pack(padx=5, pady=5)
 
-    showReservedButton = ttk.Button(ButtonFrame, text="Reserved")
+    showReservedButton = ttk.Button(ButtonFrame, text="Reserved", command=lambda: showContent(reservedRooms))
     showReservedButton.pack(padx=5, pady=5)
 
-    showunReservedButton = ttk.Button(ButtonFrame, text="Unreserved")
+    showunReservedButton = ttk.Button(ButtonFrame, text="Unreserved",command=lambda: showContent(unReservedRooms))
     showunReservedButton.pack(padx=5, pady=5)
 
     UpdateLabel = ttk.Label(ButtonFrame, text = 'Room Update')
     UpdateLabel.pack(padx=5, pady=(30,0))
-    reserveButton = ttk.Button(ButtonFrame, text = "Reserve")
+    reserveButton = ttk.Button(ButtonFrame, text = "Reserve", command=lambda: ReserveWindow())
     reserveButton.pack(padx=5, pady=5)
 
-    removeButton = ttk.Button(ButtonFrame, text = "Remove")
+    removeButton = ttk.Button(ButtonFrame, text = "Remove", command=lambda: RemoveWindow())
     removeButton.pack(padx=5, pady=5)
 
     sortRoomIDButton = ttk.Button(ButtonFrame, text="Sort by ID")
@@ -261,6 +275,19 @@ def RemoveWindow():
     confirmButton.grid( column=0, columnspan=2, pady=20, padx=(20,0))
 
     window.mainloop()
+    
+def showContent(Room):
+    tree.delete(*tree.get_children())
+    for room in Room:
+        tree.insert('', tk.END, values=(
+            room.roomID,
+            room.guestName,
+            room.guestContact,
+            room.roomType,
+            room.Price,
+            room.daysofStay,
+            room.Date
+        ))
 
 def main():
     root.title("Hotel Management")
