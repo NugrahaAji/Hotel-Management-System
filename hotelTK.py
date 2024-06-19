@@ -9,8 +9,8 @@ screenwidth = root.winfo_screenwidth()
 screenheight = root.winfo_screenheight()
 width = 855
 height = 540
-newX = int((screenwidth / 2) - (width / 2))
-newY = int((screenheight / 2) - (height / 2))
+newX = int((screenwidth/2)-(width/2))
+newY = int((screenheight/2)-(height/2))
 
 def csvReader():
     rooms = []
@@ -46,6 +46,53 @@ class RoomManager:
             key=lambda x: x.guestName.lower()
         )
 
+    def roomReserve(self, roomID, firstName, lastName, contact, daysOfStay, date):
+        Update = []
+        reader = csvReader()
+        for room in reader:
+            if room['roomID'] == roomID:
+                fullName = f"{firstName} {lastName}"
+                room['Name'] = fullName
+                room['Contact'] = contact
+                room['daysofStay'] = int(daysOfStay)
+                room['Date'] = date
+            Update.append(room)
+
+        with open('data.csv', 'w', newline='') as file:
+            fieldnames = ['roomID', 'Name', 'Contact', 'roomType', 'Price', 'daysofStay', 'Date']
+            writer = csv.DictWriter(file, fieldnames=fieldnames)
+            writer.writeheader()
+            writer.writerows(Update)
+
+    def roomRemove(self, roomID):
+        Update = []
+        reader = csvReader()
+        for room in reader:
+            if room['roomID'] == roomID and room['Name'] != '-':
+                room['Name'] = '-'
+                room['Contact'] = '-'
+                room['daysofStay'] = '-'
+                room['Date'] = '-'
+            Update.append(room)
+
+        with open('data.csv', 'w', newline='') as file:
+            fieldnames = ['roomID', 'Name', 'Contact', 'roomType', 'Price', 'daysofStay', 'Date']
+            writer = csv.DictWriter(file, fieldnames=fieldnames)
+            writer.writeheader()
+            writer.writerows(Update)
+
+    def calculateBill(self, roomID):
+        for room in self.rooms:
+            if roomID == room['roomID']:
+                try:
+                    price = int(room['Price'])
+                    days = int(room['daysofStay'])
+                    return price * days
+                except ValueError:
+                    return None
+
+        return False
+
 def MainWindow():
     global tree
     for widget in root.winfo_children():
@@ -68,9 +115,9 @@ def MainWindow():
     TableFrame.pack(side=tk.LEFT, padx=(20, 0), pady=20, expand=False, fill='both')
 
     ButtonFrame = ttk.Frame(root)
-    ButtonFrame.pack(side=tk.RIGHT, padx=(0, 20), pady=20, fill='both')
+    ButtonFrame.pack(side=tk.RIGHT, padx = (0,20), pady=20, fill='both')
 
-    RoomLabel = ttk.Label(ButtonFrame, text='Show Rooms')
+    RoomLabel = ttk.Label(ButtonFrame, text = 'Show Rooms')
     RoomLabel.pack(padx=5, pady=5)
     showAllButton = ttk.Button(ButtonFrame, text="All Rooms")
     showAllButton.pack(padx=5, pady=5)
@@ -81,22 +128,22 @@ def MainWindow():
     showunReservedButton = ttk.Button(ButtonFrame, text="Unreserved")
     showunReservedButton.pack(padx=5, pady=5)
 
-    UpdateLabel = ttk.Label(ButtonFrame, text='Room Update')
-    UpdateLabel.pack(padx=5, pady=(30, 0))
-    reserveButton = ttk.Button(ButtonFrame, text="Reserve")
+    UpdateLabel = ttk.Label(ButtonFrame, text = 'Room Update')
+    UpdateLabel.pack(padx=5, pady=(30,0))
+    reserveButton = ttk.Button(ButtonFrame, text = "Reserve")
     reserveButton.pack(padx=5, pady=5)
 
-    removeButton = ttk.Button(ButtonFrame, text="Remove")
+    removeButton = ttk.Button(ButtonFrame, text = "Remove")
     removeButton.pack(padx=5, pady=5)
 
     sortRoomIDButton = ttk.Button(ButtonFrame, text="Sort by ID")
-    sortRoomIDButton.pack(side=tk.BOTTOM, padx=5, pady=(5, 5))
+    sortRoomIDButton.pack(side=tk.BOTTOM, padx=5, pady=(5,5))
 
-    sortedDateButton = ttk.Button(ButtonFrame, text="Sort by Price")
-    sortedDateButton.pack(side=tk.BOTTOM, padx=5, pady=(5, 5))
+    sortedDateButton = ttk.Button(ButtonFrame, text = "Sort by Price")
+    sortedDateButton.pack(side=tk.BOTTOM, padx=5, pady=(5,5))
 
-    searchButton = ttk.Button(ButtonFrame, text="Search")
-    searchButton.pack(side=tk.BOTTOM, padx=5, pady=(5, 5))
+    searchButton = ttk.Button(ButtonFrame, text = "Search")
+    searchButton.pack(side=tk.BOTTOM, padx=5, pady=(5,5))
 
     column = ['Room ID', 'Guest Name', 'Guest Contact', 'Room Type', 'Price', 'Days of Stay', 'Date of Entry']
     columnWidth = [70, 180, 150, 80, 60, 80, 80]
@@ -123,12 +170,16 @@ def MainWindow():
     tree.configure(yscroll=scrollbar.set)
     scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
+
 def main():
     root.title("Hotel Management")
     global newX, newY, width, height
+
     root.geometry(f"{width}x{height}+{newX}+{newY}")
     root.resizable(False, False)
+
     root.configure(background="#4c4c6c")
+
     MainWindow()
     root.mainloop()
 
